@@ -1,0 +1,4 @@
+name: Bundles
+version: ${plugin_version}
+main: com.mineinabyss.bundles.BundlesPlugin
+api-version: 1.17
