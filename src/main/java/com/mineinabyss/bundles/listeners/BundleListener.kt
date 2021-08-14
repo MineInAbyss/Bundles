@@ -37,7 +37,7 @@ object BundleListener : Listener {
         bundleMeta.items.size > 0 || return
 
         val bundleSize = if (bundleMeta.items.size > 54) 54 else bundleMeta.items.size
-        val slots = round(bundleSize.toLong(), 9).toInt()
+        val slots = ceil(bundleSize.toLong(), 9).toInt()
 
         val bundleInventory = Bukkit.createInventory(BundleHolder(), slots, "Bundle")
         bundleInventory.contents = bundleMeta.items.subList(0, bundleSize).toTypedArray()
@@ -45,7 +45,7 @@ object BundleListener : Listener {
         player.openInventory(bundleInventory)
     }
 
-    private fun round(n: Long, m: Long): Long {
+    private fun ceil(n: Long, m: Long): Long {
         return if (n >= 0) (n + m - 1) / m * m else n / m * m
     }
 
