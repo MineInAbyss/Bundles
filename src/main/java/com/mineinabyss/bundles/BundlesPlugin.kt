@@ -1,6 +1,8 @@
 package com.mineinabyss.bundles
 
+import com.mineinabyss.bundles.config.BundlesConfig
 import com.mineinabyss.bundles.listeners.BundleListener
+import com.mineinabyss.bundles.listeners.PlayerListener
 import com.mineinabyss.idofront.plugin.registerEvents
 import com.mineinabyss.idofront.slimjar.LibraryLoaderInjector
 import kotlinx.serialization.InternalSerializationApi
@@ -16,9 +18,11 @@ class BundlesPlugin : JavaPlugin() {
     override fun onEnable() {
 //        LibraryLoaderInjector.inject(this)
         saveDefaultConfig()
+        BundlesConfig.load()
 
         registerEvents(
-            BundleListener
+            BundleListener,
+            PlayerListener
         )
     }
 }
