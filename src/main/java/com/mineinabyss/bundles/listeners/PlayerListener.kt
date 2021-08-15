@@ -6,9 +6,9 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerJoinEvent
 
-object PlayerListener: Listener {
+object PlayerListener : Listener {
     @EventHandler
     fun PlayerJoinEvent.join() {
-        if(BundlesConfig.data.discoverOnJoin) player.discoverRecipe(BundlesConfig.data.bundleRecipe.key.toMCKey())
+        if (BundlesConfig.data.discoverOnJoin) player.discoverRecipe(BundlesConfig.data.bundleRecipe.key.toMCKey())
     }
 }

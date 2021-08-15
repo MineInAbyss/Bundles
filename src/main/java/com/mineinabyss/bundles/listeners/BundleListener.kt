@@ -3,7 +3,6 @@ package com.mineinabyss.bundles.listeners
 import com.mineinabyss.bundles.BundleHolder
 import com.mineinabyss.bundles.bundlesPlugin
 import com.mineinabyss.idofront.entities.rightClicked
-import com.mineinabyss.idofront.messaging.broadcastVal
 import com.mineinabyss.idofront.messaging.error
 import org.bukkit.Bukkit
 import org.bukkit.Material
@@ -11,13 +10,15 @@ import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
-import org.bukkit.event.inventory.*
-import org.bukkit.event.inventory.ClickType.*
+import org.bukkit.event.inventory.ClickType.SWAP_OFFHAND
+import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryAction.*
+import org.bukkit.event.inventory.InventoryClickEvent
+import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.inventory.EquipmentSlot
 import org.bukkit.inventory.Inventory
-import org.bukkit.inventory.ItemStack
 import org.bukkit.inventory.meta.BundleMeta
 
 
@@ -65,30 +66,30 @@ object BundleListener : Listener {
     @EventHandler
     fun InventoryClickEvent.click() {
         // Prevent interacting with the bundle via vanilla method when you have the bundle inventory open
-        if(inventory.holder is BundleHolder && currentItem?.type == Material.BUNDLE) isCancelled = true
+        if (inventory.holder is BundleHolder && currentItem?.type == Material.BUNDLE) isCancelled = true
 
-        if((cursor?.type == Material.BUNDLE || currentItem?.type == Material.BUNDLE) && isRightClick) {
-            val bundle = if(cursor?.type == Material.BUNDLE) cursor else currentItem
-            val item = if(cursor?.type == Material.BUNDLE) currentItem else cursor
+        if ((cursor?.type == Material.BUNDLE || currentItem?.type == Material.BUNDLE) && isRightClick) {
+            val bundle = if (cursor?.type == Material.BUNDLE) cursor else currentItem
+            val item = if (cursor?.type == Material.BUNDLE) currentItem else cursor
             // Check if the bundle has 54 unique items and stop adding new items
             val bundleMeta = bundle?.itemMeta as BundleMeta
 
-            if(cursor?.type != Material.AIR && bundleMeta.items.size >= 54) {
-                if(!bundleMeta.items.any { it.isSimilar(item) }) {
+            if (cursor?.type != Material.AIR && bundleMeta.items.size >= 54) {
+                if (!bundleMeta.items.any { it.isSimilar(item) }) {
                     whoClicked.error("This bundle has too many unique items!")
                     isCancelled = true
                 }
             }
         }
 
-        if(action === MOVE_TO_OTHER_INVENTORY) {
-            if(inventory.holder is BundleHolder && clickedInventory?.holder !is BundleHolder) isCancelled = true
+        if (action === MOVE_TO_OTHER_INVENTORY) {
+            if (inventory.holder is BundleHolder && clickedInventory?.holder !is BundleHolder) isCancelled = true
         }
 
-        if(clickedInventory?.holder is BundleHolder) {
-            if(cursor?.type != Material.AIR) isCancelled = true
+        if (clickedInventory?.holder is BundleHolder) {
+            if (cursor?.type != Material.AIR) isCancelled = true
 
-            when(action) {
+            when (action) {
                 SWAP_WITH_CURSOR,
                 HOTBAR_MOVE_AND_READD,
                 HOTBAR_SWAP,
@@ -103,7 +104,7 @@ object BundleListener : Listener {
 
         }
 
-        if(inventory.holder is BundleHolder) {
+        if (inventory.holder is BundleHolder) {
             Bukkit.getServer().scheduler.scheduleSyncDelayedTask(bundlesPlugin, {
                 saveBundle(whoClicked as Player, inventory)
             }, 1)
@@ -113,7 +114,7 @@ object BundleListener : Listener {
 
     @EventHandler
     fun InventoryDragEvent.drag() {
-        if(inventory.holder is BundleHolder) isCancelled = true
+        if (inventory.holder is BundleHolder) isCancelled = true
     }
 
     @EventHandler
