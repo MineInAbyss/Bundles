@@ -11,7 +11,6 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.EventPriority
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.ClickType.SWAP_OFFHAND
-import org.bukkit.event.inventory.InventoryAction
 import org.bukkit.event.inventory.InventoryAction.*
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
@@ -26,9 +25,9 @@ object BundleListener : Listener {
 
     @EventHandler(priority = EventPriority.HIGHEST)
     fun PlayerInteractEvent.click() {
-        if (hand == EquipmentSlot.OFF_HAND) return  //the event is called twice, on for each hand. We want to ignore the offhand call
+        if (hand == EquipmentSlot.OFF_HAND) return //the event is called twice, one for each hand. We want to ignore the offhand call
 
-        if (!rightClicked) return   //only do stuff when player rightclicks
+        if (!rightClicked) return //only do stuff when player rightclicks
 
         player.inventory.itemInMainHand.type == Material.BUNDLE || return
         isCancelled = true // Cancel the regular bundle action
@@ -46,10 +45,15 @@ object BundleListener : Listener {
         player.openInventory(bundleInventory)
     }
 
+    /**
+     * This function takes a number and rounds it to the nearest multiple
+     *
+     * @param n number
+     * @param m multiple
+     */
     private fun round(n: Long, m: Long): Long {
         return if (n >= 0) (n + m - 1) / m * m else n / m * m
     }
-
 
     private fun saveBundle(player: Player, inv: Inventory): Boolean {
         (inv.holder is BundleHolder) || return false
@@ -93,7 +97,7 @@ object BundleListener : Listener {
                 SWAP_WITH_CURSOR,
                 HOTBAR_MOVE_AND_READD,
                 HOTBAR_SWAP,
-                InventoryAction.UNKNOWN -> {
+                UNKNOWN -> {
                     isCancelled = true
                 }
             }
@@ -121,9 +125,8 @@ object BundleListener : Listener {
     fun onInventoryClose(event: InventoryCloseEvent) {
         if (event.player is Player) {
             val player = event.player as Player
-            if (saveBundle(player, player.openInventory.topInventory)) {
-                //
-            }
+            if (!saveBundle(player, player.openInventory.topInventory)) return
+            //
         }
     }
 }
