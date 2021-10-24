@@ -6,7 +6,6 @@ plugins {
 	id("com.mineinabyss.conventions.slimjar")
 	id("com.mineinabyss.conventions.copyjar")
 	id("com.mineinabyss.conventions.publication")
-	kotlin("jvm")
 	kotlin("plugin.serialization")
 }
 
