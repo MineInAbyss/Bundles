@@ -1,8 +1,12 @@
+val idofrontVersion: String by project
+
 plugins {
 	id("com.mineinabyss.conventions.kotlin")
-	kotlin("plugin.serialization")
 	id("com.mineinabyss.conventions.papermc")
+	id("com.mineinabyss.conventions.slimjar")
+	id("com.mineinabyss.conventions.copyjar")
 	id("com.mineinabyss.conventions.publication")
+	kotlin("plugin.serialization")
 }
 
 repositories {
@@ -12,5 +16,5 @@ repositories {
 
 dependencies {
 	// Shaded
-	implementation("com.mineinabyss:idofront:1.17.1-0.6.23")
+	implementation("com.mineinabyss:idofront:$idofrontVersion")
 }
