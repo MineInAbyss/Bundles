@@ -4,6 +4,7 @@ import com.mineinabyss.bundles.BundleHolder
 import com.mineinabyss.bundles.bundlesPlugin
 import com.mineinabyss.idofront.entities.rightClicked
 import com.mineinabyss.idofront.messaging.error
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
@@ -39,7 +40,7 @@ object BundleListener : Listener {
         val bundleSize = if (bundleMeta.items.size > 54) 54 else bundleMeta.items.size
         val slots = round(bundleSize.toLong(), 9).toInt()
 
-        val bundleInventory = Bukkit.createInventory(BundleHolder(), slots, "Bundle")
+        val bundleInventory = Bukkit.createInventory(BundleHolder(), slots, Component.text("Bundle"))
         bundleInventory.contents = bundleMeta.items.subList(0, bundleSize).toTypedArray()
 
         player.openInventory(bundleInventory)
@@ -56,11 +57,11 @@ object BundleListener : Listener {
     }
 
     private fun saveBundle(player: Player, inv: Inventory): Boolean {
-        (inv.holder is BundleHolder) || return false
+        if (inv.holder !is BundleHolder) return false
         player.inventory.itemInMainHand.type == Material.BUNDLE || return false
 
         val bundleMeta = player.inventory.itemInMainHand.itemMeta as BundleMeta
-        bundleMeta.setItems(inv.contents.asList().filterNotNull())
+        bundleMeta.setItems(inv.contents?.asList()?.filterNotNull())
 
         player.inventory.itemInMainHand.itemMeta = bundleMeta
 
@@ -100,10 +101,12 @@ object BundleListener : Listener {
                 UNKNOWN -> {
                     isCancelled = true
                 }
+                else -> return
             }
 
             when (click) {
                 SWAP_OFFHAND -> isCancelled = true
+                else -> return
             }
 
         }
@@ -123,10 +126,9 @@ object BundleListener : Listener {
 
     @EventHandler
     fun onInventoryClose(event: InventoryCloseEvent) {
-        if (event.player is Player) {
+        if (event.player is Player && (event.player as Player).isOnline) {
             val player = event.player as Player
-            if (!saveBundle(player, player.openInventory.topInventory)) return
-            //
+            //if (!saveBundle(player, player.openInventory.topInventory)) return
         }
     }
 }
